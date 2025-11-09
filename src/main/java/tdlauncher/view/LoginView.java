@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import tdlauncher.Launcher;
 import tdlauncher.controller.LoginController;
+import tdlauncher.model.User;
 
 import java.io.InputStream;
 
@@ -70,25 +71,22 @@ public class LoginView extends Page {
         steamButton.setGraphicTextGap(8);
         steamButton.setPrefSize(260, 50);
 
-        // create controller for this view and delegate login logic to it (MVC)
         LoginController controller = new LoginController(launcher);
 
         steamButton.setOnAction(ev -> {
             steamButton.setDisable(true);
             controller.loginWithSteam(steamId -> {
-                // success — already stored by controller in Launcher, navigate to home and
-                // re-enable
                 Platform.runLater(() -> {
                     System.out.println("[LoginView] SteamID set: " + steamId);
-                    steamButton.setDisable(false);
-                    // navigate to home page
+
+
+
                     launcher.setView("home");
                 });
             }, err -> {
                 Platform.runLater(() -> {
                     System.err.println("[LoginView] Steam login failed: " + err);
                     steamButton.setDisable(false);
-                    // remain on login page (no navigation)
                 });
             });
         });

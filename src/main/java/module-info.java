@@ -5,6 +5,7 @@ module td.launcher.tdlauncher {
     requires java.desktop;
     requires jdk.httpserver;
     requires javafx.web;
+    requires org.json;
 
     opens tdlauncher to javafx.fxml;
 

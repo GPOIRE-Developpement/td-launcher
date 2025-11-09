@@ -12,7 +12,7 @@ import tdlauncher.model.User;
 public class Launcher {
     private final Stage stage;
     private final BorderPane root = new BorderPane();
-    private final User currentUser = new User();
+    private User currentUser;
 
     public Launcher(Stage stage) {
         this.stage = stage;
@@ -61,13 +61,11 @@ public class Launcher {
         root.setBottom(null);
     }
 
-    /** Minimize the window */
     public void minimizeStage() {
         if (stage != null)
             stage.setIconified(true);
     }
 
-    /** Close the window */
     public void closeStage() {
         if (stage != null)
             stage.close();
@@ -77,8 +75,7 @@ public class Launcher {
         return currentUser;
     }
 
-    public void setCurrentUserSteamId(long steamId) {
-        this.currentUser.setSteamId(steamId);
-        System.out.println("[Launcher] Current user SteamID set to: " + steamId);
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 }
