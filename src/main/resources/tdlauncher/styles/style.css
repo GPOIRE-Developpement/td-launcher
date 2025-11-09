@@ -1,0 +1,48 @@
+.root {
+    -fx-background-radius: 20px;
+    -fx-background-color: #1a1a1a;
+}
+
+.page {
+    -fx-background-color: #151724;
+    -fx-background-radius: 30px;
+}
+
+.title {
+    -fx-font-family: 'Mundial';
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-fill: #FFFFFF;
+}
+
+.login-description {
+    -fx-font-family: Mundial;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-fill: #FFFFFF;
+    -fx-opacity: 0.5;
+}
+
+.steam-button {
+    -fx-background-color: #0078F2;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-graphic-text-gap: 8px;
+}
+
+.steam-button:hover {
+    -fx-background-color: #0066d6;
+}
+
+.steam-button:pressed {
+    -fx-background-color: #0058b3;
+}
+
+.steam-button .text {
+    -fx-font-family: "Segoe UI", sans-serif;
+}

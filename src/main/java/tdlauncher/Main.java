@@ -9,7 +9,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Launcher app = new Launcher(stage);
-        app.setView("home");
+        app.setView("login");
     }
 
     public static void main(String[] args) {

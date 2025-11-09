@@ -1,22 +1,18 @@
 package tdlauncher.view;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import tdlauncher.Launcher;
 
 public class HeaderView {
     private final HBox root = new HBox(10);
 
     public HeaderView(Launcher launcher) {
-        Button homeBtn = new Button("Accueil");
-        Button settingsBtn = new Button("Paramètres");
 
-        homeBtn.setOnAction(e -> launcher.setView("home"));
-        settingsBtn.setOnAction(e -> launcher.setView("settings"));
-
-        root.getChildren().addAll(homeBtn, settingsBtn);
-        root.setPadding(new Insets(10));
     }
 
     public HBox getRoot() {
