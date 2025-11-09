@@ -1,7 +1,7 @@
 package tdlauncher.view;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
@@ -12,14 +12,13 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import tdlauncher.Launcher;
+import tdlauncher.controller.LoginController;
 
 import java.io.InputStream;
 
@@ -71,10 +70,32 @@ public class LoginView extends Page {
         steamButton.setGraphicTextGap(8);
         steamButton.setPrefSize(260, 50);
 
+        // create controller for this view and delegate login logic to it (MVC)
+        LoginController controller = new LoginController(launcher);
+
+        steamButton.setOnAction(ev -> {
+            steamButton.setDisable(true);
+            controller.loginWithSteam(steamId -> {
+                // success — already stored by controller in Launcher, navigate to home and
+                // re-enable
+                Platform.runLater(() -> {
+                    System.out.println("[LoginView] SteamID set: " + steamId);
+                    steamButton.setDisable(false);
+                    // navigate to home page
+                    launcher.setView("home");
+                });
+            }, err -> {
+                Platform.runLater(() -> {
+                    System.err.println("[LoginView] Steam login failed: " + err);
+                    steamButton.setDisable(false);
+                    // remain on login page (no navigation)
+                });
+            });
+        });
+
         Region spacer = new Region();
         spacer.setPrefHeight(20);
 
-        // wrap the steamButton so it is centered horizontally inside vb2
         HBox buttonBox = new HBox(steamButton);
         buttonBox.setAlignment(Pos.CENTER);
 
@@ -87,8 +108,6 @@ public class LoginView extends Page {
         Image bgImage = new Image(getClass().getResourceAsStream("/tdlauncher/images/backgrounds/login.png"));
         iv.setImage(bgImage);
 
-        // create a left-to-right gradient overlay: opaque #151724 at left ->
-        // transparent at 100px
         double gradientWidth = 100;
         double imgHeight = bgImage.getHeight() > 0 ? bgImage.getHeight() : 400; // fallback height
         Rectangle gradientOverlay = new Rectangle(gradientWidth, imgHeight);

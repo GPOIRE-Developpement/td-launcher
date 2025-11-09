@@ -7,10 +7,12 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tdlauncher.view.*;
+import tdlauncher.model.User;
 
 public class Launcher {
     private final Stage stage;
     private final BorderPane root = new BorderPane();
+    private final User currentUser = new User();
 
     public Launcher(Stage stage) {
         this.stage = stage;
@@ -45,9 +47,6 @@ public class Launcher {
             case "login":
                 root.setCenter(new LoginView(this).getRoot());
                 break;
-            case "settings":
-                root.setCenter(new SettingsView(this).getRoot());
-                break;
             default: {
                 throw new IllegalArgumentException("Vue inconnue: " + name);
             }
@@ -60,5 +59,26 @@ public class Launcher {
         root.setCenter(null);
         root.setRight(null);
         root.setBottom(null);
+    }
+
+    /** Minimize the window */
+    public void minimizeStage() {
+        if (stage != null)
+            stage.setIconified(true);
+    }
+
+    /** Close the window */
+    public void closeStage() {
+        if (stage != null)
+            stage.close();
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUserSteamId(long steamId) {
+        this.currentUser.setSteamId(steamId);
+        System.out.println("[Launcher] Current user SteamID set to: " + steamId);
     }
 }

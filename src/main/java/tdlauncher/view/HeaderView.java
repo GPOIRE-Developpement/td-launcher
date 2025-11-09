@@ -12,6 +12,9 @@ public class HeaderView {
     private final HBox root = new HBox(10);
 
     public HeaderView(Launcher launcher) {
+        root.setAlignment(Pos.CENTER);
+        root.getStyleClass().add("page");
+
 
     }
 
