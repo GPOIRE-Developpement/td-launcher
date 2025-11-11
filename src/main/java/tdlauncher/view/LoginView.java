@@ -19,7 +19,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import tdlauncher.Launcher;
 import tdlauncher.controller.LoginController;
-import tdlauncher.model.User;
 import tdlauncher.util.Config;
 
 import java.io.InputStream;

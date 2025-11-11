@@ -2,7 +2,7 @@ package tdlauncher.controller;
 
 import org.json.JSONObject;
 import tdlauncher.Launcher;
-import tdlauncher.auth.SteamOpenId;
+import tdlauncher.util.SteamOpenId;
 import tdlauncher.model.User;
 
 import java.io.BufferedReader;

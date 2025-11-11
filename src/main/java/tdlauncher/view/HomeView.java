@@ -9,6 +9,9 @@ import tdlauncher.view.Page;
 public class HomeView extends Page {
     public HomeView(Launcher launcher) {
         root.setAlignment(Pos.CENTER);
-        root.getChildren().add(new Label("Bienvenue sur la page d'accueil !"));
+
+
+
+        root.getChildren().add(NavBarView.display());
     }
 }

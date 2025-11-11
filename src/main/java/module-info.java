@@ -13,5 +13,5 @@ module td.launcher.tdlauncher {
     exports tdlauncher;
     exports tdlauncher.model;
     exports tdlauncher.controller;
-    exports tdlauncher.auth;
+    exports tdlauncher.util;
 }
