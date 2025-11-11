@@ -8,11 +8,15 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tdlauncher.view.*;
 import tdlauncher.model.User;
+import tdlauncher.util.Config;
+
+import static tdlauncher.util.Config.loadSteamId;
 
 public class Launcher {
     private final Stage stage;
     private final BorderPane root = new BorderPane();
     private User currentUser;
+    private String steamLocation;
 
     public Launcher(Stage stage) {
         this.stage = stage;
@@ -34,6 +38,31 @@ public class Launcher {
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setScene(scene);
         stage.setTitle("TD Launcher");
+
+        // Charger la configuration sauvegardée (SteamID et emplacement)
+        try {
+            Long savedSteamId = loadSteamId();
+            String savedSteamLocation = Config.loadSteamLocation();
+            if (savedSteamId != null) {
+                this.currentUser = new User();
+                this.currentUser.setSteamId(savedSteamId);
+                System.out.println("[Launcher] Loaded saved SteamID: " + savedSteamId);
+            }
+            if (savedSteamLocation != null && !savedSteamLocation.isEmpty()) {
+                this.steamLocation = savedSteamLocation;
+                System.out.println("[Launcher] Loaded saved Steam location: " + savedSteamLocation);
+            }
+        } catch (Exception e) {
+            System.err.println("[Launcher] Failed to load config: " + e.getMessage());
+        }
+
+        // Vue initiale : si on a déjà SteamID et emplacement -> home, sinon login
+        if (this.currentUser != null && this.steamLocation != null && !this.steamLocation.isEmpty()) {
+            setView("home");
+        } else {
+            setView("login");
+        }
+
         stage.show();
     }
 
@@ -46,6 +75,9 @@ public class Launcher {
                 break;
             case "login":
                 root.setCenter(new LoginView(this).getRoot());
+                break;
+            case "steamlocation":
+                root.setCenter(new SteamLocationView(this).getRoot());
                 break;
             default: {
                 throw new IllegalArgumentException("Vue inconnue: " + name);
@@ -77,5 +109,28 @@ public class Launcher {
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
+        if (user == null) {
+            Config.saveSteamId(null);
+        } else {
+            try {
+                Config.saveSteamId(user.getSteamId());
+            } catch (Exception e) {
+                System.err.println("[Launcher] Failed to save SteamID: " + e.getMessage());
+            }
+        }
+    }
+
+    public String getSteamLocation() {
+        return steamLocation;
+    }
+
+    public void setSteamLocation(String steamLocation) {
+        this.steamLocation = steamLocation;
+        System.out.println("[Launcher] Steam location set: " + steamLocation);
+        try {
+            Config.saveSteamLocation(steamLocation);
+        } catch (Exception e) {
+            System.err.println("[Launcher] Failed to save steam location: " + e.getMessage());
+        }
     }
 }

@@ -1,9 +1,10 @@
 package tdlauncher.view;
 
 import javafx.geometry.Pos;
-import javafx.application.Platform;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -17,15 +18,14 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.control.Alert;
+import javafx.stage.DirectoryChooser;
 import tdlauncher.Launcher;
-import tdlauncher.controller.LoginController;
-import tdlauncher.model.User;
-import tdlauncher.util.Config;
 
 import java.io.InputStream;
 
-public class LoginView extends Page {
-    public LoginView(Launcher launcher) {
+public class SteamLocationView extends Page {
+    public SteamLocationView(Launcher launcher) {
         root.setAlignment(Pos.CENTER);
         root.getStyleClass().add("page");
 
@@ -46,7 +46,8 @@ public class LoginView extends Page {
         title.getStyleClass().add("title");
 
         Text description = new Text(
-                "Bienvenue sur le launcher de Treakdown. Il est votre seul moyen de venir vous éclater avec nos sur les meilleurs serveurs Gmod actuels.");
+                "Maintenant que tu es connecté, afin de fonctionner correctement, nous devons savoir où est installé votre jeu.\n"
+                        + "Met l’emplacement de \n" + "/steamapps/");
         description.getStyleClass().add("login-description");
         description.setWrappingWidth(300);
 
@@ -64,43 +65,68 @@ public class LoginView extends Page {
             steamIcon.setPreserveRatio(true);
         }
 
+        Label steamLocationLabel = new Label("Aucun dossier sélectionné");
+        steamLocationLabel.setPrefWidth(300);
+        steamLocationLabel.setPrefHeight(50);
+        steamLocationLabel.setAlignment(Pos.CENTER_LEFT);
+        steamLocationLabel.setWrapText(true);
+        steamLocationLabel.setMouseTransparent(true);
+        steamLocationLabel.setFocusTraversable(false);
+        steamLocationLabel.getStyleClass().add("steam-location-box");
+
         Button steamButton = (steamIcon != null)
-                ? new Button("Se connecter avec Steam", steamIcon)
-                : new Button("Se connecter avec Steam");
+                ? new Button("Emplacement de Steam", steamIcon)
+                : new Button("Emplacement de Steam");
         steamButton.getStyleClass().add("steam-button");
         steamButton.setContentDisplay(ContentDisplay.LEFT);
         steamButton.setGraphicTextGap(8);
         steamButton.setPrefSize(260, 50);
 
-        LoginController controller = new LoginController(launcher);
-
         steamButton.setOnAction(ev -> {
-            steamButton.setDisable(true);
-            controller.loginWithSteam(steamId -> {
-                Platform.runLater(() -> {
-                    System.out.println("[LoginView] SteamID set: " + steamId);
+            DirectoryChooser chooser = new DirectoryChooser();
+            chooser.setTitle("Sélectionner le dossier Steam (contenant steamapps)");
+            java.io.File selected = null;
+            javafx.stage.Window owner = null;
+            try {
+                owner = ((javafx.scene.Node) ev.getSource()).getScene().getWindow();
+                selected = chooser.showDialog(owner);
+            } catch (Exception ex) {
+                selected = chooser.showDialog(null);
+            }
+            if (selected != null) {
+                String folderName = selected.getName();
 
-                    if(Config.loadSteamLocation() == null){
-                        launcher.setView("steamlocation");
-                    }else{
-                        launcher.setView("home");
+                if (!"steamapps".equalsIgnoreCase(folderName)) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Emplacement invalide");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Veuillez sélectionner le dossier 'steamapps'.");
+                    if (owner != null) {
+                        alert.initOwner(owner);
                     }
-                });
-            }, err -> {
-                Platform.runLater(() -> {
-                    System.err.println("[LoginView] Steam login failed: " + err);
-                    steamButton.setDisable(false);
-                });
-            });
+                    alert.showAndWait();
+                    return;
+                }
+
+                String path = selected.getAbsolutePath();
+                steamLocationLabel.setText(path);
+
+                launcher.setSteamLocation(path);
+
+                launcher.setView("home");
+            }
         });
 
         Region spacer = new Region();
         spacer.setPrefHeight(20);
 
+        HBox locationBox = new HBox(steamLocationLabel);
+        locationBox.setAlignment(Pos.CENTER);
+
         HBox buttonBox = new HBox(steamButton);
         buttonBox.setAlignment(Pos.CENTER);
 
-        vb2.getChildren().addAll(title, description, spacer, buttonBox);
+        vb2.getChildren().addAll(title, description, spacer, locationBox, buttonBox);
 
         vb.getChildren().add(vb2);
 

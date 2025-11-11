@@ -38,7 +38,7 @@ public class LoginController {
         });
     }
 
-    public User getSteamUser(long steamId) {
+    public static User getSteamUser(long steamId) {
         try {
             String url = String.format("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=%s&steamids=%s", API_KEY, steamId);
 
@@ -57,7 +57,7 @@ public class LoginController {
                 player.getLong("steamid"),
                 player.getString("personaname"),
                 player.getString("avatarfull"),
-                player.getString("loccountrycode")
+                "FR"
             );
         } catch (Exception e) {
             e.printStackTrace();
